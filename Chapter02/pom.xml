@@ -6,10 +6,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.rubypaper</groupId>
-	<artifactId>Chapter01</artifactId>
+	<artifactId>Chapter02</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>Chapter01</name>
+	<name>Chapter02</name>
 	<!-- FIXME change it to the project's website -->
 	<url>http://www.example.com</url>
 
