@@ -11,7 +11,7 @@ import lombok.Data;
 @Table(name="S_EMP")
 public class Employee {
 
-	@Id
+	@Id 
 	private EmployeeId empId;
 	
 	private String name;
