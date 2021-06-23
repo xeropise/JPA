@@ -72,7 +72,32 @@
 
 <br>
 
-**8. @ElementCollection, @CollectionTable**
+**8. @EntityGraph**
+
+- 쿼리 메소드 마다 연관 관계의 Fetch 모드를 유연하게 설정 가능하다.
+- 기본적으로 @ManyToOne 은 Fetch 모드 기본값이 Eager, @OneToMany 는 (Many 로 끝나는 경우) 기본값이 LAZY 이다.
+- EAGER 의 경우, comment, post 엔티티가 있다면 comment 정보를 가져올 떄 post 정보도 미리 가져오지만 LAZY 의 경우 post 데이터가 필요한 시점에 쿼리를 날린다.
+
+- 영속성 때문에 LAZY LOADING 으로 발생하는 N+1 쿼리 문제 해결을 위해 사용할 수 있다.
+
+```java
+@EntityGraph(attributePaths = "subjects")
+@Query("select a from post a")
+List<post> findAllPost();
+```
+
+- EntityGraph 의 attributePaths에 쿼리 수행할 때 같이 가져올 필드명을 지정하면 Lazy 가 아닌 Eager로 조회해서 가져온다.
+
+- 속성 값 중 type을 이용해 attributePaths 에 정의한 필드값만 EAGER 로 불러오고 나머지 필드 값 LAZY 혹은 각자 FetchType 으로 가져오게 할 수 있다.
+
+```java
+@EntityGraph(attributePaths = "country", type = EntityGraphType.FETCH)
+@EntityGraph(attributePaths = "country", type = EntityGraphType.LOAD)
+```
+
+  <br>
+
+**9. @ElementCollection, @CollectionTable**
 
 - RDB 에서는 내부적으로 컬렉션을 담을 수 있는 구조가 없다. 값만 넣을 수 있다. 이런 관계를 DB 테이블에 저장하려면 별도의 테이블이 필요하다.
 
