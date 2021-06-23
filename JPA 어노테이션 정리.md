@@ -1,3 +1,5 @@
+## 엔티티 관련
+
 **1. @Entity**
 
 - JPA는 Entity가 설정된 클래스로부터 생성된 객체만 엔티티로 인지하고 사용할 수 있다. name 속성으로 엔티티 이름을 지정할 수 있다.
@@ -68,6 +70,29 @@
   - AccessType.FIELD : 멤버 변수에 직접 접근
   - AccessType.PROPERTY : Getter/Setter 메소드를 통해 접근
 
+<br>
+
+**8. @ElementCollection, @CollectionTable**
+
+- RDB 에서는 내부적으로 컬렉션을 담을 수 있는 구조가 없다. 값만 넣을 수 있다. 이런 관계를 DB 테이블에 저장하려면 별도의 테이블이 필요하다.
+
+```java
+@ElementCollection
+@CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+@Column(name = "FOOD_NAME")
+private Set<String> favoriteFoods = new HashSet<>();
+
+@ElementCollection
+@CollectionTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+private List<Address> addressHistory = new ArrayList<>();
+```
+
+- 위와 같이 선언한 값 타입 컬렉션을 가지고 있으면, RDB 에서 FAVORITE_FOOD, ADDRESS 라는 별도의 테이블을 만들어서 관리하게 된다.
+
+- @CollectionTable 의 속성으로 테이블의 이름과, 외래키를 지정해 줄 수 있다.
+
+- 값타입 컬렉션도 값 타입이기 때문에 생명주기를 가지지 않고, 엔티티와 같은 생명주기를 따라간다. 주의사항은 값 타입 분류를 참조하자.
+
 ---
 
 ### 식별자 값 자동 생성
@@ -104,3 +129,118 @@
 
 - GenerationType.AUTO
   : 하이버네이트가 데이터베이스에 맞는 PK 값 생성 전략을 선택한다. (기본값)
+
+<br>
+
+### 공통 Entity 관련
+
+1. @MappedSuperclass
+
+   - 테이블과 매핑하지 않고 부모 클래스를 상속 받는 자식 클래스에게 매핑 정보만 제공을 위해 사용하는 어노테이션
+
+   - @Entity는 실제 테이블과 매핑되지만, @MappedSuperclass 는 실제 테이블과 매핑되지 않는다.
+
+   - 공통 값인 등록일, 수정일 등 단순히 매핑 정보를 상속한 목적으로만 사용하는 어노테이션
+
+1. @EntityListeners
+
+   - Entity를 통해 자동으로 값을 넣어주기 위해 사용하는 어노테이션
+
+   - 엔티티를 DB에 적용하기 전에 (FLUSH 전) 커스텀 콜백을 요청할 수 있는 어노테이션이다.
+
+   - @CreatedDate, @LastModifiedDate 을 통해 엔티티가 생성되거나 저장될 때, 값을 변경할 때 시간이 자동 저장된다.
+
+---
+
+## Config 관련 설정
+
+1. @EnableTransactionManagement
+
+   - XML의 \<tx:annotation-driven> 과 동일한 스프링에서 Java Config 파일에서 트랜잭션을 활성화 할 떄 사용하는 어노테이션
+
+   - 스프링부트의 경우 AutoConfiguration 으로 설정되어있다.
+
+   - @Transactional 을 사용할 수 있다.
+
+2. @@EnableJpaRepositories
+
+   - 스프링 컨테이너가 리포지터리 인터페이스들을 인지하여 리포지터리 인터페이스에 대한 구현 객체를 생성하도록 한다.
+
+   - basePackage 속성을 통해 인포지터리 인터페이스들이 들어있는 패키지를 지정할 수 있다.
+
+   - @Bean 사용하는 경우 txManager 메소드로 생성된 JpaTransactionManager 객체는 이름이 txManager 가 되는데, 다른 이름을 사용하고 싶은 경우 @Bean 의 name 속성으로 지정해야 한다.
+
+   - LocalContainerEntityManagerFactoryBean 과 JpaTransactionManager 는 다른 객체와 달리 고정된 이름을 사용해야 하는데 스프링 컨테이너가 정해진 이름으로 등록된 객체만 사용할 수 있도록 프로그램되어 있따.
+
+   - @Bean 을 사용하되, name 속성을 사용하고 싶지 않다면 @EnableJpaRepositories 어노테이션이 가진 entityManagerFactory 속성과 transactionManagerRef 속성에 해당 객체의 메소듸 이름을 등록해야 한다.
+
+```java
+@Configuration
+@PropertySource("classpath:/META-INF/database.properties")
+@EnableTransactionManagement
+@EnableJpaRepositories(
+		basePackages = "org.xeropise.portfolio.mvc.repository",
+		entityManagerFactoryRef = "factoryBean",
+		transactionManagerRef = "txManager"
+)
+public class DatabaseConfig {
+
+	@Value("${database.driverClassName}")
+	private String driver;
+
+	@Value("${database.url}")
+	private String url;
+
+	@Value("${database.username}")
+	private String username;
+
+	@Value("${database.password}")
+	private String password;
+
+	@Bean
+	public HibernateJpaVendorAdapter vendorAdaptor() {
+		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+
+		return adapter;
+	}
+
+	@Bean
+	public DataSource dataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName(driver);
+		dataSource.setUrl(url);
+		dataSource.setUsername(username);
+		dataSource.setPassword(password);
+
+		return dataSource;
+	}
+
+	@Bean
+	public LocalContainerEntityManagerFactoryBean factoryBean() {
+
+		// Hibernate에서 SessionFactoryBean과 동일한 역활을 담당하는 FactoryBean이다.
+		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+		factoryBean.setJpaVendorAdapter(vendorAdaptor());
+		factoryBean.setDataSource(dataSource());
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
+		properties.put("hibernate.show_sql", "true");
+		properties.put("hibernate.format_sql", "true");
+		properties.put("hibernate.id.new_generator_mappings", "true");
+		properties.put("hibernate.hbm2ddl.auto", "create");
+
+		factoryBean.setJpaPropertyMap(properties);
+
+		return factoryBean;
+	}
+
+	@Bean
+	public JpaTransactionManager txManager(EntityManagerFactory factory) {
+		JpaTransactionManager txManager = new JpaTransactionManager();
+		txManager.setEntityManagerFactory(factory);
+		return txManager;
+	}
+}
+
+```
