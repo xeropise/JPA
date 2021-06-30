@@ -90,6 +90,10 @@ List<post> findAllPost();
 
 - 속성 값 중 type을 이용해 attributePaths 에 정의한 필드값만 EAGER 로 불러오고 나머지 필드 값 LAZY 혹은 각자 FetchType 으로 가져오게 할 수 있다.
 
+  - FETCH: entity graph에 명시한 attribute는 EAGER로 패치하고, 나머지 attribute는 LAZY로 패치
+
+  - LOAD: entity graph에 명시한 attribute는 EAGER로 패치하고, 나머지 attribute는 entity에 명시한 fetch type이나 디폴트 FetchType으로 패치 (e.g. @OneToMany는 LAZY, @ManyToOne은 EAGER 등이 디폴트이다.)
+
 ```java
 @EntityGraph(attributePaths = "country", type = EntityGraphType.FETCH)
 @EntityGraph(attributePaths = "country", type = EntityGraphType.LOAD)
@@ -187,7 +191,7 @@ private List<Address> addressHistory = new ArrayList<>();
 
    - @Transactional 을 사용할 수 있다.
 
-2. @@EnableJpaRepositories
+2. @EnableJpaRepositories
 
    - 스프링 컨테이너가 리포지터리 인터페이스들을 인지하여 리포지터리 인터페이스에 대한 구현 객체를 생성하도록 한다.
 
