@@ -126,7 +126,7 @@ private List<Address> addressHistory = new ArrayList<>();
 
   <br>
 
-**10. @Embeddable, @Embedded, @AttributeOverrides**
+**10. @Embeddable, @Embedded, @AttributeOverrides, @EmbeddedId**
 
 - 한 클래스를 엔티티의 컬럼 객체로 사용하기 위해 사용한다.
 
@@ -155,6 +155,42 @@ public class UserEntity {
 		@AttributeOverride(name = "address1", column = @Column(name = user_address1))
 	)
 	private Address address;
+}
+```
+
+- 식별자를 밸류타입으로 사용하려고 하는 경우, @Id 대신 @EmbeddedId 어노테이션을 사용해야 한다.
+   - JPA 에서 식별자 타입은 Serializable 타입이어야 하므로, 인터페이스를 상속 받아야 한다.
+
+
+```java
+@Entity
+@Table(name = "purchase_order")
+public class Order {
+	@Embeddedid
+	private OrderNo number;
+	...
+}
+
+@Embeddable
+public class OrderNo implements Serializable {	
+	@Column(name="order_number")
+	private String number;
+	...
+}
+```
+
+- 밸류타입으로 식별자를 구현할 때 얻을 수 있는 장점은 식별자에 기능을 추가할 수 있다는 점이다.
+
+```java
+@Embeddable
+public class OrderNo implements Serializable {
+	@Column(name = "order_number")
+	private String number;
+	
+	public boolean is2ndGeneration() {
+		return number.startsWith("N");
+	}	
+	...
 }
 ```
 
