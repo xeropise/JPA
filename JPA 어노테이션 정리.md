@@ -300,6 +300,28 @@ public class Order {
 }
 ```
 
+
+<br>
+
+**13. @Inheritance, @DiscriminatorColumn, @DiscriminatorValue**
+
+- 객체는 상속관계까 존재하지만, 관게형 데이터베이스에는 상속 관계가 없다.
+- 상속관계 매핑을 통해 객체의 상속 구조와 DB 의 슈퍼타입,서브타입 관계를 매핑한다.
+- DB의 슈퍼타입 서브타입 논리 모델을 실제 물리모델로 구현 하는 방법은 3가지지만 JPA에서는 어떤 방식을 사용하든 매핑이 가능하다.
+
+- @Inheritance(strategy=InheritanceType.XXX)의 stategy를 설정해주면 된다.
+	- InheritanceType 종류
+		- JOINED
+		- SINGLE_TABLE (default)
+		- TABLE_PER_CLASS
+
+- @DiscriminatorColumn(name="DTYPE")
+	- 부모 클래스에 선언한다. 하위 클래스를 구분하는 용도의 컬럼이다. 관례는 default = DTYPE
+
+- @DiscriminatorValue("XXX")
+	- 하위 클래스에 선언한다. 엔티티를 저장할 때 슈퍼타입의 구분 컬럼에 저장할 값을 지정한다.
+
+어노테이션을 선언하지 않을 경우 기본값으로 클래스 이름이 들어간다.
 ---
 
 ### 식별자 값 자동 생성
