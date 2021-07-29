@@ -182,6 +182,68 @@ private Gender gender    // MALE로 세팅하면 1, FEMALE 은 2
 private Gender gender;   // "MALE", "FEMALE" 문자열 자체가 저장
 ```
 
+<br>
+
+**12. @Convert**
+
+- int, long, String, LocalDate 와 같은 타입들은 DB 테이블에 한 개 칼럼과 매핑된다.
+
+- 밸류타입들을 한 개 컬럼에 매핑해야 할 때 사용해야 한다. 에로 길이를 값과 단위로 가지고 있는 밸류 타입을 "1000mm" 로 저장해야 할 수도 있다.
+
+- JPA 2.1 에 추가된 컨버터를 통해 밸류 타입과 컬럼데이터 간의 변환처리 기능을 지원해 준다.
+
+```java
+package shop.infra;
+
+import shop.common.Money
+  
+import javax.persitence.AttributeConverter;
+import javax.persistence.Converter;
+
+@Converter(autoAppluy = true) // 모델에 출현하는 모든 Money 타입의 프로퍼티에 대해 MoneyConvert를 자동으로 적용
+public class MoneyConverter implement AttributeConverter<Money, Integer> {
+  
+  	@Override
+  	public Integer convertToDatabaseColumn(Money money) {
+      if(money == null)
+        	return null;
+      else
+        	return money.getValue();
+    }
+  
+  	@Override
+  	public Money convertToEntityAttribute(Integer value) {
+      if(value == null) return null;
+      else return new Money(value);
+    }
+}
+
+/////////////////////////////////////////////////////
+
+@Entity
+@Table(name = "purchase_order")
+public class Order {
+  	...
+      
+    @Column(name = "total_amounts")
+    private Money totalAmounts; 	// MoneyConverter 를 적용해서 값 변환
+  
+  	...
+}
+
+////////////////////////////////////////////////////////
+
+// @Converter 의 autoApply 속성을 사용하지 않음 (기본)
+import javax.persistence.Convert;
+
+public class Order {
+
+    @Column(name = "total_amounts")
+    @Conver(converter = MoneyConverter.class)
+    private Money totalAmounts;
+}
+```
+
 ---
 
 ### 식별자 값 자동 생성
