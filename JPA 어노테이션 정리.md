@@ -7,7 +7,7 @@
 
 <br>
 
-**2. @Table**
+**2. @Table, @SecondaryTable**
 
 - 엔티티와 매핑할 테이블을 지정한다.
 - 기본적으로 엔티티 이름과 동일한 이름의 테이블이 매핑되지만 이름이 다른 경우, name 속성을 사용하여 매핑할 테이블을 지정해야 한다.
@@ -18,6 +18,26 @@
 | catalog           | 데이터베이스 카탈로그를 지정한다 (MySQL)                                                            |
 | schema            | 데이터베이스 스키마를 지정한다 (schema)                                                             |
 | uniqueConstraints | 결합 unique 제약조건을 지정하며, 여러 개의 칼럼이 결합되어 유일성을 보장해야 하는 경우 사용(복합키) |
+
+- 하나의 엔티티에 다수의 테이블을 매핑하기 위해서는 @SecondaryTable 을 사용하면 된다.
+
+```java
+@Entity
+@Table(name = "BOARD")
+@SecondaryTable(name = "BOARD_DETAIL",
+                pkJoinColumns = @PrimaryKeyJoinColumn(name = "BOARD_DETAL_ID")) // pkJoinColumns 를 사용하지 않으면 @Id 를 기본으로 가져간다.
+@Getter
+@Setter
+public class Board {
+    @Id
+    @Column(name = "BOARD_ID")
+    private String id;
+    private String title;
+    @Column(table = "BOARD_DETAIL",
+            name = "BOARD_CONTENT")
+    private String content;
+}
+```
 
 <br>
 
