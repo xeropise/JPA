@@ -122,6 +122,41 @@ private List<Address> addressHistory = new ArrayList<>();
 
 - 값타입 컬렉션도 값 타입이기 때문에 생명주기를 가지지 않고, 엔티티와 같은 생명주기를 따라간다. 주의사항은 값 타입 분류를 참조하자.
 
+  <br>
+
+**10. @Embeddable, @Embedded, @AttributeOverrides**
+
+- 한 클래스를 엔티티의 컬럼 객체로 사용하기 위해 사용한다.
+
+- 주소를 세부 주소1, 세부 주소2 등으로 정의할 수 있다. 이를 한 엔티티에 펼처 놓는것이 아닌 밸류 타입으로 쓰는 것
+
+```java 
+@Embeddable
+public class Address {
+
+	private address1
+	private address2 
+	private zipCode; 
+}
+
+```
+
+```java
+@Entity
+@Table(name = "user")
+public class UserEntity {
+
+	...
+	
+	@Embedded
+	@AttributeOverrides(
+		@AttributeOverride(name = "address1", column = @Column(name = user_address1))
+	)
+	private Address address;
+}
+```
+
+
 ---
 
 ### 식별자 값 자동 생성
