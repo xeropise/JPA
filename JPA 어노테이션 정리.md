@@ -70,6 +70,8 @@
   - AccessType.FIELD : 멤버 변수에 직접 접근
   - AccessType.PROPERTY : Getter/Setter 메소드를 통해 접근
 
+- 명시적으로 접근 방법을 지정하지 않으면 @Id 나 @EmbeddedId 가 어디에 위치했느냐에 따라 접근 방식을 정한다.
+
 <br>
 
 **8. @EntityGraph**
@@ -156,6 +158,29 @@ public class UserEntity {
 }
 ```
 
+  <br>
+
+**11. @Enumerated**
+
+- 자바 엔티티 필드의 Enum 타입을 데이터베이스에 매핑할 때 어떻게 매핑할 것인지 정해주는 어노테이션이다.
+
+|속성 명|설명|
+|------|---|
+|EnumType.ORDINAL| enum 순서 값을 DB에 저장|
+|EnumType.STRING| enum 이름을 DB에 저장|
+
+```java
+enum Gender {
+   MALE,
+   FEMALE
+}
+
+@Enumerated(EnumType.ORDINAL)
+private Gender gender    // MALE로 세팅하면 1, FEMALE 은 2
+
+@Enumerated(EnumType.STRING)
+private Gender gender;   // "MALE", "FEMALE" 문자열 자체가 저장
+```
 
 ---
 
