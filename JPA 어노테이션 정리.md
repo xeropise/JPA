@@ -328,6 +328,7 @@ public class Order {
   - 하위 클래스에 선언한다. 엔티티를 저장할 때 슈퍼타입의 구분 컬럼에 저장할 값을 지정한다.
   - 어노테이션을 선언하지 않을 경우 기본값으로 클래스 이름이 들어간다.
 
+- 관계에 대한 설명은 [여기](https://loosie.tistory.com/211)를 참조하자.
 <br>
 
 **14. @TypeDefs, @TypeDef, @Type**
