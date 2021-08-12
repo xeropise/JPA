@@ -324,13 +324,15 @@ public class Order {
 
 <br>
 
-**14. @TypeDefs, @TypeDef**
+**14. @TypeDefs, @TypeDef, @Type**
 
-- Package 나 Entity Class 레벨에 부여 가능한 어노테이션
+- Package 나 Entity Class 레벨에 부여 가능한 어노테이션 \[ @TypeDefs, @TypeDef \]
 
-- 커스텀 타입을 정의 가능하다.
+- 커스텀 타입을 정의 가능하다. \[ @TypeDefs, @TypeDef \]
 
 - [여기](https://www.baeldung.com/hibernate-custom-types)를 참조하자.
+
+- 특정 자바 타입에 대해 하이버네이트 타입을 사용하도록 강제할 수 있다. [여기](https://kwonnam.pe.kr/wiki/java/hibernate/types)를 참조하자.
 
 ### 식별자 값 자동 생성
 
