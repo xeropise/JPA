@@ -341,6 +341,16 @@ public class Order {
 
 - 특정 자바 타입에 대해 하이버네이트 타입을 사용하도록 강제할 수 있다. [여기](https://kwonnam.pe.kr/wiki/java/hibernate/types)를 참조하자.
 
+<br>
+
+**15. @DynamicUpdate**
+
+- JPA의 기본 동작은 변경되지 않은 컬럼도 update 쿼리에 포함
+
+- 실제 값이 변경된 컬럼으로만 update 쿼리를 만드는 기능
+
+- 자세한 것은 [여기](https://www.baeldung.com/spring-data-jpa-dynamicupdate)를 참조 하자.
+
 ### 식별자 값 자동 생성
 
 - JPA 는 테이블의 기본 키와 엔티티의 식별자 변수를 매핑하여 유일한 엔티티 객체를 식별하고 관리한다.
