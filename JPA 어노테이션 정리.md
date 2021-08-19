@@ -49,7 +49,7 @@ public class Board {
 - 테이블의 기본 키와 매핑되는 식별자 변수를 매핑
 - 식별자 변수는 테이블의 기본 키(Primary Key)와 매핑되는 변수를 의미한다.
 
-- 
+- @MapsId는 복합 키와 관련이 있는데 [여기](https://incheol-jung.gitbook.io/docs/study/jpa/7) 를 참조하자.
 
 <br>
 
