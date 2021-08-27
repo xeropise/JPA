@@ -50,7 +50,7 @@ public class Board {
 - 식별자 변수는 테이블의 기본 키(Primary Key)와 매핑되는 변수를 의미한다.
 
 - @MapsId는 복합 키와 관련이 있는데 [여기](https://incheol-jung.gitbook.io/docs/study/jpa/7) 를 참조하자.
-
+	- 외래 키와 매핑한 연관관계를 기본 키에도 매핑하겠다는 뜻이다. 속성값은 @EmbeddedId 를 사용한 필드명을 지정한다. [여기](https://steady-hello.tistory.com/106)를 참조하자. 
 <br>
 
 **4. @Column**
@@ -353,6 +353,12 @@ public class Order {
 
 - 팀장님께 리뷰 받으면서 왜 이 좋은 기능을 그럼 JPA에서 기본 값으로 쓰지 않을까요 라면서 설명해주셨는데 그 이유는 다음과 같다. 
 	- 성능상 문제점이 발생할 수 있다. 각 컬럼을 다 비교해야 하는데 컬럼이 많은 경우에는 어떻게 될까?... 그렇다 ㅠㅠ
+
+<br>
+
+**16. @PrimaryKeyJoinColumn**
+
+- FK이면서 동시에 PK로 id를 사용하는 테이블에 관해 정의하는 테이블
 
 ### 식별자 값 자동 생성
 
