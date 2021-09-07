@@ -308,7 +308,7 @@ public class Order {
 
 <br>
 
-**13. @Inheritance, @DiscriminatorColumn, @DiscriminatorValue**
+**13. @Inheritance, @DiscriminatorColumn, @DiscriminatorValue, @DiscriminatorFormula**
 
 - 객체는 상속관계가 존재하지만, 관게형 데이터베이스에는 상속 관계가 없다.
 - 상속관계 매핑을 통해 객체의 상속 구조와 DB 의 슈퍼타입,서브타입 관계를 매핑한다.
@@ -329,6 +329,12 @@ public class Order {
 - @DiscriminatorValue("XXX")
   - 하위 클래스에 선언한다. 엔티티를 저장할 때 슈퍼타입의 구분 컬럼에 저장할 값을 지정한다.
   - 어노테이션을 선언하지 않을 경우 기본값으로 클래스 이름이 들어간다.
+
+- @DiscriminatorFormula
+  - 해당 컬럼의 값으로 자식 클래스가 명확하게 구분되어질 때 사용한다. 
+	```java
+	@DiscriminatorFormula("case when deal_type = 'AIR' then 'AIR' else 'LODGE' end")
+	```
 
 - 관계에 대한 설명은 [여기](https://loosie.tistory.com/211)를 참조하자.
 <br>
