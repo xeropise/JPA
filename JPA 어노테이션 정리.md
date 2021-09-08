@@ -429,6 +429,16 @@ public class Order {
 
 - 실제 프로젝트에서 쓰는것이 너무 많아 모두 정리는 어려우므로, 일단 [여기](https://data-make.tistory.com/613) 를 참조하자.
 
+1. @JoinColumn
+
+   - 외래 키를 매핑할 때 사용 한다.
+
+  | 속성      | 설명                                | 기본값 |
+  | --------- | ----------------------------------- | -----   |
+  | name  | 매핑할 외래 키 이름 |  필드명 + _ + 참조하는 테이블의 기본 키 컬럼명		   |
+  | referencedColumnName | 외래 키가 참조하는 대상 테이블의 컬럼명        | 참조하는 테이블의 기본키 컬럼명	    |		
+  | foreignKey(DDL)	 | 외래 키 제약조건을 직접 지정 가능, 테이블을 생성할 때만 사용 				|
+  | unique <br> nullable <br> insertable <br> updatable <br> columnDefinition <br> table <br>  |  @Column 속성과 같다
 ---
 
 ## Config 관련 설정
