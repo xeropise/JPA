@@ -487,16 +487,128 @@ public class Order {
 	public void addMember(Member member) {
 		this.members.add(member);
 		if (members.getTeam() != this) {
-			members.setTeam(this)'
+			members.setTeam(this);
 		}
 	}
 	```
 	
-	> 연관관계의 주인
-	> JPA에서 두 객체 연관관계 중 하나를 정해서 데이터베이스에서 외래 키를 관리하는데 이것을 연관관계의 주인이라 한다.
-	> 외래 키를 가진 테이블과 매핑한 엔티티가 외래키를 관리하는 게 효율적이므로 보통 이곳을 연관관계의 주인으로 선택한다.
-	> 주인이 아닌 방향은 외래 키를 변경할 수 없고, 읽기만 가능하다.
+	> 연관관계의 주인 <br>
+	> JPA에서 두 객체 연관관계 중 하나를 정해서 데이터베이스에서 외래 키를 관리하는데 이것을 연관관계의 주인이라 한다.  <br>
+	> 외래 키를 가진 테이블과 매핑한 엔티티가 외래키를 관리하는 게 효율적이므로 보통 이곳을 연관관계의 주인으로 선택한다.  <br>
+	> 주인이 아닌 방향은 외래 키를 변경할 수 없고, 읽기만 가능하다.  <br>
 	> 연관관계의 주인은 mappedBy 속성ㅇ르 사용하지 않는다. 연관관계의 주인이 아니면 mappedBy 속성을 사용하고, 연관관계의 주인 필드 이름을 값으로 입력해야 한다.
+
+4. @ManyToMany
+
+	- 관계형 데이터베이스에서는 보통 다대다 관계를 1대다, 다대1 관계로 풀어내는 연결 테이블을 사용한다.
+
+	- 그런데 객체는 테이블과 다르게 객체 2개로 다대다 관계를 만들 수 있다. 
+
+	- 단방향
+
+	  - @ManyToMany와 @JoinTable 을 사용해서 연결 테이블을 바로 매핑할 수 있다. A와 B 사이를 잇는 엔티티 없이 매핑이 가능하다.
+
+	  - @JoinTable로 생겨나느 테이블은 다대다 관계를 1대다, 다대1 관계로 풀어내기 위해 필요한 연결 테이블일 뿐이므로, 다대다 관계를 사용할 떄는 이 연결 테이블을 신경 쓰지 않아도 된다.
+
+	- 양방향
+	
+	  - 다대다 매핑이므로 @ManyToMany 를 그대로 사용하고, 양쪽 중 원하는 곳에 mappedBy 로 연관관계의 주인을 지정한다. (없는 곳이 연관관계의 주인이다.)
+
+	  - 양방향 연관관계는 연관관계 편의 메소드를 추가해서 관리하는 것이 편리하다. 
+
+	  ```java
+	  public void addProduct(Product product) {
+	  	...
+		products.add(product);
+		product.getMembers().add(this);
+	  }
+	  ```
+	  
+	  - 양방향 연관관계로 만들었으므로 역방향으로 객체 그래프를 탐색할 수 있다.
+
+	  - __다대다: 매핑의 한계와 극복, 연결 엔티티 사용__
+
+	  - 이 매핑을 실무에서 사용하기에 한계가 있는 이유는 보통, A와 B의 연결 테이블에 단순히 두개의 아이디만 담고 끝나지 않는다. 추가적인 컬럼이 들어감
+
+	  - 근데 이 추가한 컬럼들을 매핑하는 것을 불가능하므로 결국, 연결 테이블을 매핑하는 연결 엔티티를 만들고, 이곳에 추가한 컬럼들을 매핑해야 한다.
+
+	  - 그리고 엔티티 간의 관계도 테이블 관계처럼 다대다에서 결국 다대일, 일대다 관계로 풀어야 한다. 
+
+	  ```java
+	  // 회원
+	  @Entity
+	  public class Member {
+	  	@Id @Column(name = "MEMBER_ID")
+	  	private String id;
+		
+		@OneToMany(mappedBy = "member")
+		private List<MemberProduct> memberProducts;
+		
+		...
+	  }
+	  
+	  // 상품
+	  @Entity
+	  public class Produt {
+	  	@Id @Column(name = "PRODUCT_ID")
+		private String id;
+		
+		private String name;
+		
+		...
+	  }
+	  
+	  // 회원 상품
+	  @Entity
+	  @IdClass(MemberProductId.class)  // 복합키 매핑
+	  public class MemberProdut {
+	  	
+		@Id
+		@ManyToOne
+		@JoinColumn(name = "MEMEBER_ID")		  // 복합키 매핑
+		private Member member; //MemberProductId.member와 연결		
+		
+		@Id
+		@ManyToOne
+		@JoinColumn(name = "PRODUCTD_ID")		  // 복합키 매핑	
+		private Product product; //MemberPRoductId.product와 연결
+		
+		private int orderAmouint;
+		
+		...
+	  }
+	  
+	  // 회원 상품 식별자 클래스 
+	  public class MemberProductId implements Serializable {
+	  	
+		private String member;	//MemberProduct.member와 연결 
+		private String product; //MemberProduct.product와 연결
+		
+		//hashCode and equals
+		
+		@Override
+		public boolean equals(Object o) {...}
+		
+		@Override
+		public int hashCode() {...}
+	  }
+	  ```
+5. @JoinTable
+
+  | 속성      | 설명                                | 기본값 |
+  | --------- | ----------------------------------- | -----   |
+  | name  | 연결 테이블을 지정한다. 			|  	   |
+  | joinColumns | 현재 엔티티와 매핑할 조인 컬럼 정보를 지정한다.        | 	    |		
+  | inverseJoinColumns	 | 반대 방향인 엔티티와 매핑할 조인 컬럼 정보를 지정한다.	|     |
+  
+  ```java
+  @ManyToMany
+  @JoinTable(name = "MEMBER_PRODUCT",
+  	    joinColumns = @JoinColumn(name = "MEMBER_ID"),
+	    inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")	    
+  )
+  private List<Product> products = new ArrayList<Product>();
+  ```
 ---
 
 ## Config 관련 설정
