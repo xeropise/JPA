@@ -593,6 +593,35 @@ public class Order {
 		public int hashCode() {...}
 	  }
 	  ```
+	  
+	  - 그런데 위처럼 사용하는 경우, 복합키를 위한 복합키 클래스를 만들어 주어야 하므로 ORM 매핑에서 처리할 일이 상당히 많아 지므로, 보통 새로운 기본키를 만들어서 사용한다.
+
+	  ```java
+	  @Entity
+	  public class Order {
+	  	@Id @GeneratedValue
+		@Column(name = "ORDER_ID")
+		private Long id;
+		
+		@ManyToOne
+		@JoinColumn(name = "MEMBER_ID")
+		private Member member;
+		
+		@ManyToOne
+		@JoinColumn(name = "PRODUCDT_ID")
+		private Product product;
+		
+		private int orderAmount;
+		...
+	  }
+	  ```
+	  
+	  - 다대다 관계를 1대다, 다대1 관계로 풀어ㅐ내기 위해 연결 테이블을 만들 때 식별자를 어떻게 구성할지 선택해야 한다.
+	  	- 식별 관계 : 받아온 식별자를 기본 키 + 외래 키로 사용한다. <br>
+	  	- 비식별 관계 : 받아온 식별자는 외래 키로만 사용하고, 새로운 식별자를 추가한다. 
+	
+	  - 비식별 관계를 사용하는 것이 복합 키를 위한 식별자 클래스를 만들지 않아도 되므로 단순하고 편리하게 ORM 매핑을 할 수 있다. 
+	  
 5. @JoinTable
 
   | 속성      | 설명                                | 기본값 |
