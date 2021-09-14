@@ -185,6 +185,8 @@ public class UserEntity {
 }
 ```
 
+- @Embeddable 과 @Embedded 중 둘중 하나를 생략할 수 있다.
+
 - 식별자를 밸류타입으로 사용하려고 하는 경우, @Id 대신 @EmbeddedId 어노테이션을 사용해야 한다.
   - JPA 에서 식별자 타입은 Serializable 타입이어야 하므로, 인터페이스를 상속 받아야 한다.
 
@@ -220,6 +222,54 @@ public class OrderNo implements Serializable {
 }
 ```
 
+- 밸류 타입이 2개인데 밸류 타입의 필드가 중복된 명칭을 갖는 경우 오류가 날 수 있으므로, @AttributeOverrides를 사용해서 매핑정보를 재정의 해야 한다.
+
+```java
+@Entity
+public class Membe {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	
+	@Embedded Address homeAddress;
+	@Embedded Address companyAddress;
+```
+
+```java
+@Entity
+public class Member {
+	
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	private String name;
+	
+	@Embedded Address homeAddress;
+	
+	@Embedded
+	@AttributeOverride({
+		@AttributeOverride(name="city", column=@Column(name = "COMPANY_CITY")),
+		@AttributeOverride(name="street", column=@Column(name = "COMPANY_STREET")),
+		@AttributeOverride(name="zipcode", column=@Column(name = "COMPANY_ZIPCODE"))
+	})
+	Address companyAddress;
+}
+```
+
+```SQL
+CREATE TABLE MEMBER (
+	COMPANY_CITY varchar(255),
+	COMPANY_STREET varchar(255),
+	COMPANY_ZIPCODE varchar(@55),
+	city varchar(255),
+	street varchar(255),
+	zipcode varchar(255),
+	...
+)
+```
   <br>
 
 **11. @Enumerated**
