@@ -688,6 +688,48 @@ public class Order {
   )
   private List<Product> products = new ArrayList<Product>();
   ```
+  
+<br>  
+---
+
+## 쿼리 관련
+
+1. @NamedQuery 
+
+	- 미리 정의한 쿼리에 이름을 부여해서 필요할 때 사용하는 방법으로, 한번 정의하면 변경할 수 없는 정적 쿼리 (동적 쿼리는 "select..." 처럼 문자로 완성한 것)
+	
+	- 애플리케이션 로딩 시점에 JPQL 문법을 체크하고, 미리 파싱하므로 오류를 빨리 확인할 수 있고, 사용하는 시점에는 파싱된 결과를 재사용하므로 성능상 이점이 있음
+	
+	- 변하지 않는 정적 SQL이 생성되므로 데이터베이스의 조회 성능 최적화에도 도움을 준다.
+
+	- @NamedQuery 어노테이션을 사용해서 자바 코드에 작성하거나 또는 XML 문서에 작성할 수 있다.
+
+	```java
+	@Entity
+	@NamedQuery(
+		name = "Member.findByUserName",
+		query = "select m from Memeber m where m.uesrname = :username")
+	)
+	public class Member {
+		...
+	}
+	```
+	
+	- name에 쿼리 이름을 부여, query에는 사용할 쿼리를 입력
+
+	```java
+	List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+					.setParameter("username", "회원1")
+					.getResultList();
+	```
+	
+	```java
+	//Spring DataJPA의 경우, @Query를 다음처럼 사용하거나 생략하고, 메소드 이름으로 NamedQuery를 실행 가능하다.
+	@Query(name = "Member.findByUsername") 
+	List<Member> findByUsername(@Param("username") String username);
+	```
+<br>
+
 ---
 
 ## Config 관련 설정
@@ -708,7 +750,7 @@ public class Order {
 
    - @Bean 사용하는 경우 txManager 메소드로 생성된 JpaTransactionManager 객체는 이름이 txManager 가 되는데, 다른 이름을 사용하고 싶은 경우 @Bean 의 name 속성으로 지정해야 한다.
 
-   - LocalContainerEntityManagerFactoryBean 과 JpaTransactionManager 는 다른 객체와 달리 고정된 이름을 사용해야 하는데 스프링 컨테이너가 정해진 이름으로 등록된 객체만 사용할 수 있도록 프로그램되어 있따.
+   - LocalContainerEntityManagerFactoryBean 과 JpaTransactionManager 는 다른 객체와 달리 고정된 이름을 사용해야 하는데 스프링 컨테이너가 정해진 이름으로 등록된 객체만 사용할 수 있도록 프로그램되어 있다.
 
    - @Bean 을 사용하되, name 속성을 사용하고 싶지 않다면 @EnableJpaRepositories 어노테이션이 가진 entityManagerFactory 속성과 transactionManagerRef 속성에 해당 객체의 메소듸 이름을 등록해야 한다.
 
