@@ -453,9 +453,13 @@ public class Order {
 - GenerationType.AUTO
   : 하이버네이트가 데이터베이스에 맞는 PK 값 생성 전략을 선택한다. (기본값)
 
+  <br>
+  
 17. @Modifying
 
  - [여기](https://devhyogeon.tistory.com/4?category=878035)를 일단 참조하자. 
+ - [여기](https://www.baeldung.com/spring-data-jpa-modifying-annotation)도 참조하자.
+ 
 <br>
 
 ### 공통 Entity 관련
