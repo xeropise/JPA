@@ -718,16 +718,36 @@ public class Order {
 	
 	- name에 쿼리 이름을 부여, query에는 사용할 쿼리를 입력
 
+	<br>
+	
 	```java
 	List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
 					.setParameter("username", "회원1")
 					.getResultList();
 	```
 	
+	<br>
+	
 	```java
 	//Spring DataJPA의 경우, @Query를 다음처럼 사용하거나 생략하고, 메소드 이름으로 NamedQuery를 실행 가능하다.
 	@Query(name = "Member.findByUsername") 
 	List<Member> findByUsername(@Param("username") String username);
+	```
+	
+	- 한 엔티티에 2개 이상의 NamedQuery를 등록하려면 @NamedQueries 를 사용하면 된다.
+
+	```java
+	@Entity
+	@NamedQueries({
+		@NamedQuery(
+			name = "Member.findByUsername",
+			query = "select m from Member m where m.username = :username"),
+		@NamedQuery(
+			name = "Member.count",
+			query = "select count(m) from Member m")
+		
+	})
+	public class Member {...}
 	```
 <br>
 
