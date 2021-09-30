@@ -124,3 +124,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,eclipse,java
+
+# DS_Store
+**/.DS_Store
