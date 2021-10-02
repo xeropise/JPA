@@ -1,6 +1,9 @@
 ### Fetch Join과 컬렉션 페이징
 
 - Fetch Join 이란 SQL의 조인 종류가 아닌 JPQL 에서 제공하는 성능 최적화를 위한 기능으로 연관된 엔티티와 SQL 을 한 번에 함께 조회하는 기능을 말한다.
+
+  
+
 - Collection을 조회 (@OneToMany, @ManyToMany) 하는 경우 N+1 문제가 발생할 수 있으니 주의하여야 한다.
 
 <br>
@@ -28,9 +31,23 @@ HHH000104: firstResult/maxResults specified with collection fetch; applying in m
 
     - 조회 쿼리를 날리는 경우, ManyToOne 관계에서 페이징을 조회하여 가져와서 조회하는 방법이다.
 
+      
+
   - 컬렉션 지연로딩 조회
 
     - hibernate.default_batch_fetch_size와 @BatchSize를 이용하는 방법이다.
+
+      - hibernate.default_batch_fetch_size 는 Global 로 동작을 설정
+
+        
+
+      - @BatchSize는 개별로 동작하도록 설정할 수 있다.
+
+        
+
+    - 이 옵션을 사용하는 경우, 컬렉션이나 프록시 객체를 한꺼번에 설정한 size만큼 IN쿼리로 조회한다.
+
+      
 
     - 어떻게 동작하는지는 [여기](https://jojoldu.tistory.com/414)를 참조하자.
 
