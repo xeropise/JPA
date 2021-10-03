@@ -39,6 +39,17 @@
 - 가장 이상적인 방법은, 두 엔티티를 분리해서 가져오는 것이다.
 
   - 이로 인해, MultipleBagFetchException과 카티션 곱을 모두 피할 수 있다.
+  
+    
+  
+- 쿼리 힌트로 QueryHints.HINT_PASS_DISTINCT_THROUGH 을 false 로 사용하면 실제 생성되는 SQL 쿼리에 DISTINCT 키워드가 포함되는 것을 방지할 수 있다.
+
+```
+    Query query = entityManager.createQuery(jpql)
+      .setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false);
+```
+
+
 
 
 
