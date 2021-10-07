@@ -459,6 +459,10 @@ public class Order {
 
  - [여기](https://devhyogeon.tistory.com/4?category=878035)를 일단 참조하자. 
  - [여기](https://www.baeldung.com/spring-data-jpa-modifying-annotation)도 참조하자.
+
+18. @NotFound
+
+- 자세한 것은 [여기](https://lyb1495.tistory.com/91)를 참조
  
 <br>
 
@@ -472,7 +476,7 @@ public class Order {
 
    - 공통 값인 등록일, 수정일 등 단순히 매핑 정보를 상속한 목적으로만 사용하는 어노테이션
 
-1. @EntityListeners
+2. @EntityListeners
 
    - Entity를 통해 자동으로 값을 넣어주기 위해 사용하는 어노테이션
 
